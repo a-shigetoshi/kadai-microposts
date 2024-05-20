@@ -120,4 +120,39 @@ class User extends Authenticatable //implements MustVerifyEmail
         // それらのユーザーが所有する投稿に絞り込む
         return Micropost::whereIn('user_id', $userIds);
     }
+    
+    public function favorite()
+    {
+    return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id');
+    }
+
+   public function favorites()
+    {
+        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id');
+    }
+    
+    public function addFavorite(int $micropostId)
+    {
+        if (!$this->is_favorite($micropostId)) {
+            $this->favorites()->attach($micropostId);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public function unfavorite(int $micropostId)
+    {
+        if ($this->is_favorite($micropostId)) {
+            $this->favorites()->detach($micropostId);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public function is_favorite(int $micropostId)
+    {
+        return $this->favorites()->where('micropost_id', $micropostId)->exists();
+    }
 }

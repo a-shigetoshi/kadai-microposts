@@ -37,7 +37,7 @@ class UsersController extends Controller
     
         ]);
     }
-    public function followings($id)
+        public function followings($id)
         {
             // idの値でユーザーを検索して取得
             $user = User::findOrFail($id);
@@ -48,11 +48,12 @@ class UsersController extends Controller
             // ユーザーのフォロー一覧を取得
             $followings = $user->followings()->paginate(10);
     
-            // フォロー一覧ビューでそれらを表示
-            return view('users.followings', [
+            
+            // フォロワー一覧ビューでそれらを表示
+            return view('users.followers', [
                 'user' => $user,
-                'users' => $followings,
-            ]);
+                'users' => $followers,
+              ]);
         }
     
         /**
@@ -62,20 +63,33 @@ class UsersController extends Controller
          * @return \Illuminate\Http\Response
          */
         public function followers($id)
-        {
-            // idの値でユーザーを検索して取得
-            $user = User::findOrFail($id);
+    {
+        // idの値でユーザーを検索して取得
+        $user = User::findOrFail($id);
     
-            // 関係するモデルの件数をロード
-            $user->loadRelationshipCounts();
+        // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
     
-            // ユーザーのフォロワー一覧を取得
-            $followers = $user->followers()->paginate(10);
+        // ユーザーのフォロワー一覧を取得
+        $followers = $user->followers()->paginate(10);
     
-            // フォロワー一覧ビューでそれらを表示
-            return view('users.followers', [
-                'user' => $user,
-                'users' => $followers,
-              ]);
-        }
+        // フォロワー一覧ビューでそれらを表示
+        return view('users.followers', [
+            'user' => $user,
+            'followers' => $followers,
+        ]);
     }
+        
+        public function favorites($id)
+    {
+        $user = User::findOrFail($id);
+        $favorites = $user->favorites()->paginate(10); 
+    
+        return view('users.favorites', [
+            'user' => $user,
+            'favorites' => $favorites,
+        ]);
+            
+    }
+    
+}
