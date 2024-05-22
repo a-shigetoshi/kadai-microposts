@@ -10,15 +10,15 @@ class FavoritesController extends Controller
 {
     public function store(string $micropostId)
     {
-        $micropost = Micropost::findOrFail(intval($micropostId));
-        \Auth::user()->addFavorite($micropost->id);
+       
+        \Auth::user()->addFavorite(intval($micropostId));
         return back();
     }
     
     public function destroy(string $micropostId)
     {
-        $micropost = Micropost::findOrFail(intval($micropostId));
-        \Auth::user()->removeFavorite($micropost->id);
+        
+        \Auth::user()->unFavorite(intval($micropostId));
         return back();
     }
 }

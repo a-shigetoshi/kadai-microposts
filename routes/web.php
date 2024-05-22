@@ -13,17 +13,18 @@ Route::get('/dashboard', [MicropostsController::class, 'index'])->middleware(['a
 
 Route::middleware('auth')->group(function () {
   
-  Route::prefix('microposts/{micropost}')->group(function () {
-        Route::post('favorite', [FavoritesController::class, 'store'])->name('favorite');
-        Route::delete('unfavorite', [FavoritesController::class, 'destroy'])->name('unfavorite');
-        Route::get('favorite', [UsersController::class, 'favorite'])->name('users.favorites');
+  Route::prefix('microposts/{id}')->group(function () {
+    Route::post('favorites', [FavoritesController::class, 'store'])->name('favorites');
+    Route::delete('unfavorite', [FavoritesController::class, 'destroy'])->name('unfavorite');
+        
     });
     
-    Route::prefix('users/{id}')->group(function () {            
-     Route::post('follow', [UserFollowController::class, 'store'])->name('user.follow');
-     Route::delete('unfollow', [UserFollowController::class, 'destroy'])->name('user.unfollow');
-     Route::get('followings', [UsersController::class, 'followings'])->name('users.followings');
-     Route::get('followers', [UsersController::class, 'followers'])->name('users.followers');
+ Route::prefix('users/{id}')->group(function () {            
+   Route::post('follow', [UserFollowController::class, 'store'])->name('user.follow');
+   Route::delete('unfollow', [UserFollowController::class, 'destroy'])->name('user.unfollow');
+   Route::get('followings', [UsersController::class, 'followings'])->name('users.followings');
+   Route::get('followers', [UsersController::class, 'followers'])->name('users.followers');
+   Route::get('favorites', [UsersController::class, 'favorites'])->name('users.favorites');
     });
     
     Route::resource('users', UsersController::class, ['only' => ['index', 'show']]);

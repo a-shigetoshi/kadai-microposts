@@ -1,14 +1,21 @@
 @if (Auth::id() != $micropost->id)
+    @if (Auth::user()->is_favorite($micropost->id))
     {{-- Favorite/Unfavorite ボタンのフォーム --}}
-    <form method="POST" action="{{ Auth::user()->is_favorite($micropost->id) ? route('unfavorite', $micropost->id) : route('favorite', $micropost->id) }}">
+    <form method="POST" action="{{ route('unfavorite', $micropost->id) }}">
         @csrf
-        @if (Auth::user()->is_favorite($micropost->id))
             {{-- Unfavorite ボタン --}}
-            <button type="submit" class="btn btn-error btn-block normal-case" 
+            @method('DELETE')
+            <button type="submit" class="btn btn-success btn-block normal-case" 
                 onclick="return confirm('id = {{ $micropost->id }} お気に入りを外します。よろしいですか？')">Unfavorite</button>
         @else
+             <form method="POST" action="{{ route('favorites', $micropost->id) }}">
+             @csrf
             {{-- Favorite ボタン --}}
-            <button type="submit" class="btn btn-primary btn-block normal-case">Favorite</button>
+           <button type="submit" class="btn btn-sm btn-secondary active">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+  Favorite
+</button>
         @endif
     </form>
 @endif
+

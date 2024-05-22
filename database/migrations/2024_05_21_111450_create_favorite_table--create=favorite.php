@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('micropost_id');
+            $table->unsignedBigInteger('microposts_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('micropost_id')->references('id')->on('microposts')->onDelete('cascade');
+            $table->foreign('microposts_id')->references('id')->on('microposts')->onDelete('cascade');
 
-            $table->unique(['user_id', 'micropost_id']);
+            $table->unique(['user_id', 'microposts_id']);
         });
     }
 

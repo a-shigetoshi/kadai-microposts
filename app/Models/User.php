@@ -50,7 +50,7 @@ class User extends Authenticatable //implements MustVerifyEmail
     
     public function loadRelationshipCounts()
     {
-        $this->loadCount(['microposts', 'followings', 'followers']);
+        $this->loadCount(['microposts', 'followings', 'followers','favorites']);
     }
     
     /**
@@ -121,38 +121,42 @@ class User extends Authenticatable //implements MustVerifyEmail
         return Micropost::whereIn('user_id', $userIds);
     }
     
-    public function favorite()
-    {
-    return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id');
-    }
-
+    
    public function favorites()
     {
-        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id');
+        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'microposts_id');
     }
     
-    public function addFavorite(int $micropostId)
+    public function addFavorite(int $micropostsId)
     {
-        if (!$this->is_favorite($micropostId)) {
-            $this->favorites()->attach($micropostId);
+        if (!$this->is_favorite($micropostsId)) {
+            $this->favorites()->attach($micropostsId);
             return true;
         }
         
         return false;
     }
     
-    public function unfavorite(int $micropostId)
+    public function unfavorite(int $micropostsId)
     {
-        if ($this->is_favorite($micropostId)) {
-            $this->favorites()->detach($micropostId);
+        if ($this->is_favorite($micropostsId)) {
+            $this->favorites()->detach($micropostsId);
             return true;
         }
         
         return false;
     }
     
-    public function is_favorite(int $micropostId)
+    public function is_favorite(int $micropostsId)
     {
-        return $this->favorites()->where('micropost_id', $micropostId)->exists();
+        return $this->favorites()->where('microposts_id', $micropostsId)->exists();
+    }
+    
+    public function feed_favorites()
+    {
+        // このユーザーがフォロー中のユーザーのidを取得して配列にする
+        $micropostsId = $this->favorites()->pluck('favorites.microposts_id')->toArray();
+        // それらのユーザーが所有する投稿に絞り込む
+        return Micropost::whereIn('id', $micropostsId);
     }
 }
